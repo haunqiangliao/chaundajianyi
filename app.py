@@ -112,29 +112,42 @@ def outfit_recommendation():
                                             if any(keyword in item['name'] for keyword in occasion_rules[occasion][category])]
                         valid_clothes[category] = occasion_filtered if occasion_filtered else valid_clothes[category]
                 
-                # 检查每个分类是否有可用衣物
-                missing_categories = [category for category, items in valid_clothes.items() if not items]
+                # 确保每个分类至少有一个选项
+                for category in valid_clothes:
+                    if not valid_clothes[category]:
+                        # 如果筛选后为空，则使用原始数据库中的所有符合季节的衣物
+                        valid_clothes[category] = [item for item in clothes_db[category] 
+                                                  if not item['season'] or season in item['season']]
                 
-                if missing_categories:
-                    st.warning(f"抱歉，没有找到适合 {occasion} 和 {weather} 的 {', '.join(missing_categories)}")
-                    return
-                
-                # 生成3套穿搭建议
+                # 生成至少一套穿搭建议
                 outfits = []
-                max_attempts = 10  # 最大尝试次数，防止无限循环
                 
-                for _ in range(3):
-                    attempt = 0
-                    while attempt < max_attempts:
-                        outfit = {}
-                        for category in valid_clothes:
-                            outfit[category] = random.choice(valid_clothes[category])
-                        
-                        # 检查是否与已生成的穿搭重复
-                        if outfit not in outfits:
-                            outfits.append(outfit)
+                # 生成第一套穿搭（强制生成）
+                outfit = {}
+                for category in valid_clothes:
+                    outfit[category] = random.choice(valid_clothes[category])
+                outfits.append(outfit)
+                
+                # 尝试生成额外的穿搭建议（最多2套）
+                max_attempts = 20
+                attempts = 0
+                
+                while len(outfits) < 3 and attempts < max_attempts:
+                    new_outfit = {}
+                    for category in valid_clothes:
+                        new_outfit[category] = random.choice(valid_clothes[category])
+                    
+                    # 检查是否与已生成的穿搭重复
+                    is_duplicate = False
+                    for existing_outfit in outfits:
+                        if all(new_outfit[category] == existing_outfit[category] for category in new_outfit):
+                            is_duplicate = True
                             break
-                        attempt += 1
+                    
+                    if not is_duplicate:
+                        outfits.append(new_outfit)
+                    
+                    attempts += 1
                 
                 # 显示穿搭建议
                 st.subheader(f"为您生成的 {occasion} {weather} 穿搭建议：")
@@ -155,6 +168,14 @@ def outfit_recommendation():
                             <div style="width: 24px; height: 24px; background-color: {item['color']}; border-radius: 50%; margin-right: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.2);"></div>
                             <span style="font-weight: 500; width: 80px; display: inline-block;">{category}:</span>
                             <span style="margin-left: 5px; color: #333;">{item['name']}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    
+                    # 添加提示信息
+                    if i == 1 and len(outfits) == 1:
+                        st.markdown(f"""
+                        <div style="margin-top: 10px; padding: 8px; background-color: #fff3cd; border-radius: 5px; color: #856404; font-size: 0.9em;">
+                            <i class="fa fa-lightbulb-o"></i> 由于筛选条件较严格，仅生成了一套穿搭建议。您可以尝试调整条件以获取更多选择。
                         </div>
                         """, unsafe_allow_html=True)
                     
