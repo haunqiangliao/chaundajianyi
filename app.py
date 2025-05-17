@@ -10,7 +10,7 @@ st.set_page_config(
     layout="wide"
 )
 
-# 预设服装数据库
+# 预设服装数据库（增加了一些基础款，确保所有条件下都有可选衣物）
 clothes_db = {
     "上衣": [
         {"name": "白色T恤", "color": "#FFFFFF", "season": ["春季", "夏季", "秋季"]},
@@ -23,7 +23,9 @@ clothes_db = {
         {"name": "蓝色连衣裙", "color": "#0000FF", "season": ["春季", "夏季"]},
         {"name": "针织开衫", "color": "#D2B48C", "season": ["春季", "秋季"]},
         {"name": "羽绒服", "color": "#F0F8FF", "season": ["冬季"]},
-        {"name": "毛衣", "color": "#A0522D", "season": ["秋季", "冬季"]}
+        {"name": "毛衣", "color": "#A0522D", "season": ["秋季", "冬季"]},
+        {"name": "基础款长袖", "color": "#8B4513", "season": ["全年"]},  # 新增全年可用选项
+        {"name": "休闲外套", "color": "#696969", "season": ["全年"]}     # 新增全年可用选项
     ],
     "下装": [
         {"name": "蓝色牛仔裤", "color": "#3B7A9D", "season": ["春季", "秋季", "冬季"]},
@@ -31,42 +33,45 @@ clothes_db = {
         {"name": "卡其色休闲裤", "color": "#F0E68C", "season": ["春季", "秋季"]},
         {"name": "黑色短裙", "color": "#000000", "season": ["春季", "夏季", "秋季"]},
         {"name": "碎花长裙", "color": "#FFB6C1", "season": ["春季", "夏季"]},
-        {"name": "运动裤", "color": "#8FBC8F", "season": ["全年"]},
-        {"name": "加绒裤", "color": "#8B4513", "season": ["冬季"]}
+        {"name": "运动裤", "color": "#8FBC8F", "season": ["全年"]},       # 新增全年可用选项
+        {"name": "加绒裤", "color": "#8B4513", "season": ["冬季"]},
+        {"name": "基础款短裤", "color": "#D3D3D3", "season": ["夏季"]}     # 新增夏季选项
     ],
     "鞋履": [
-        {"name": "白色运动鞋", "color": "#FFFFFF", "season": ["全年"]},
+        {"name": "白色运动鞋", "color": "#FFFFFF", "season": ["全年"]},    # 新增全年可用选项
         {"name": "黑色皮鞋", "color": "#000000", "season": ["全年"]},
         {"name": "凉鞋", "color": "#FFA500", "season": ["夏季"]},
         {"name": "切尔西靴", "color": "#8B4513", "season": ["秋季", "冬季"]},
         {"name": "雪地靴", "color": "#F5F5DC", "season": ["冬季"]},
         {"name": "低跟鞋", "color": "#800080", "season": ["全年"]},
-        {"name": "高跟鞋", "color": "#FF0000", "season": ["全年"]}
+        {"name": "高跟鞋", "color": "#FF0000", "season": ["全年"]},
+        {"name": "帆布鞋", "color": "#CD5C5C", "season": ["全年"]}         # 新增全年可用选项
     ],
     "配饰": [
         {"name": "黑色围巾", "color": "#000000", "season": ["冬季"]},
         {"name": "白色帽子", "color": "#FFFFFF", "season": ["全年"]},
         {"name": "太阳镜", "color": "#808080", "season": ["夏季"]},
         {"name": "项链", "color": "#FFD700", "season": ["全年"]},
-        {"name": "手提包", "color": "#A52A2A", "season": ["全年"]}
+        {"name": "手提包", "color": "#A52A2A", "season": ["全年"]},
+        {"name": "手表", "color": "#C0C0C0", "season": ["全年"]}           # 新增全年可用选项
     ]
 }
 
-# 天气对应穿搭规则
+# 天气对应穿搭规则（调整为更宽松的筛选条件）
 weather_rules = {
-    "晴天": {"上衣": ["T恤", "衬衫", "薄外套"], "下装": ["短裤", "短裙", "薄款长裤"], "鞋履": ["凉鞋", "运动鞋"]},
-    "多云": {"上衣": ["衬衫", "卫衣", "薄外套"], "下装": ["牛仔裤", "休闲裤"], "鞋履": ["休闲鞋", "运动鞋"]},
-    "雨天": {"上衣": ["防水外套", "风衣"], "下装": ["长裤"], "鞋履": ["雨鞋", "防水鞋"]},
-    "寒冷": {"上衣": ["毛衣", "羽绒服", "厚外套"], "下装": ["加绒裤", "毛裤"], "鞋履": ["雪地靴", "保暖鞋"]}
+    "晴天": {"上衣": ["T恤", "衬衫", "薄外套", "连衣裙"], "下装": ["短裤", "短裙", "薄款长裤"], "鞋履": ["凉鞋", "运动鞋", "帆布鞋"]},
+    "多云": {"上衣": ["衬衫", "卫衣", "薄外套", "针织开衫"], "下装": ["牛仔裤", "休闲裤"], "鞋履": ["休闲鞋", "运动鞋", "帆布鞋"]},
+    "雨天": {"上衣": ["防水外套", "风衣", "休闲外套"], "下装": ["长裤"], "鞋履": ["雨鞋", "防水鞋", "切尔西靴"]},
+    "寒冷": {"上衣": ["毛衣", "羽绒服", "厚外套", "卫衣"], "下装": ["加绒裤", "毛裤", "牛仔裤"], "鞋履": ["雪地靴", "切尔西靴"]}
 }
 
-# 场合对应穿搭规则
+# 场合对应穿搭规则（调整为更宽松的筛选条件）
 occasion_rules = {
-    "日常": {"上衣": ["T恤", "卫衣", "衬衫"], "下装": ["牛仔裤", "休闲裤", "短裤", "短裙"], "鞋履": ["运动鞋", "休闲鞋"]},
-    "上班": {"上衣": ["衬衫", "西装", "职业装"], "下装": ["西装裤", "长裙"], "鞋履": ["皮鞋", "低跟鞋"]},
-    "运动": {"上衣": ["运动背心", "运动卫衣"], "下装": ["运动裤", "瑜伽裤"], "鞋履": ["运动鞋"]},
-    "约会": {"上衣": ["连衣裙", "雪纺衫", "针织衫"], "下装": ["牛仔裤", "短裙"], "鞋履": ["高跟鞋", "凉鞋"]},
-    "派对": {"上衣": ["晚礼服", "闪亮上衣", "露肩装"], "下装": ["长裙", "紧身裤"], "鞋履": ["高跟鞋", "凉鞋"]}
+    "日常": {"上衣": ["T恤", "卫衣", "衬衫", "针织开衫"], "下装": ["牛仔裤", "休闲裤", "短裤", "短裙"], "鞋履": ["运动鞋", "休闲鞋", "帆布鞋"]},
+    "上班": {"上衣": ["衬衫", "西装", "职业装", "连衣裙"], "下装": ["西装裤", "长裙", "牛仔裤"], "鞋履": ["皮鞋", "低跟鞋"]},
+    "运动": {"上衣": ["运动背心", "运动卫衣", "T恤"], "下装": ["运动裤", "瑜伽裤"], "鞋履": ["运动鞋"]},
+    "约会": {"上衣": ["连衣裙", "雪纺衫", "针织衫", "衬衫"], "下装": ["牛仔裤", "短裙", "长裙"], "鞋履": ["高跟鞋", "凉鞋", "低跟鞋"]},
+    "派对": {"上衣": ["晚礼服", "闪亮上衣", "露肩装", "连衣裙"], "下装": ["长裙", "紧身裤", "短裙"], "鞋履": ["高跟鞋", "凉鞋"]}
 }
 
 # 穿搭推荐页面
@@ -93,31 +98,47 @@ def outfit_recommendation():
                 valid_clothes = {}
                 
                 for category, items in clothes_db.items():
-                    # 应用季节筛选
+                    # 应用季节筛选（最基本的筛选）
                     season_filtered = [item for item in items 
                                       if not item['season'] or season in item['season']]
                     
-                    # 应用天气筛选
+                    # 应用天气筛选（如果有对应规则）
+                    weather_filtered = []
                     if weather in weather_rules and category in weather_rules[weather]:
+                        weather_keywords = weather_rules[weather][category]
                         weather_filtered = [item for item in season_filtered 
-                                           if any(keyword in item['name'] for keyword in weather_rules[weather][category])]
-                        valid_clothes[category] = weather_filtered if weather_filtered else season_filtered
+                                           if any(keyword in item['name'] for keyword in weather_keywords)]
+                        
+                        # 如果天气筛选后没有结果，放宽条件使用季节筛选结果
+                        if not weather_filtered:
+                            weather_filtered = season_filtered
                     else:
-                        valid_clothes[category] = season_filtered
-                
-                # 应用场合筛选
-                for category in valid_clothes:
+                        weather_filtered = season_filtered
+                    
+                    # 应用场合筛选（如果有对应规则）
                     if occasion in occasion_rules and category in occasion_rules[occasion]:
-                        occasion_filtered = [item for item in valid_clothes[category] 
-                                            if any(keyword in item['name'] for keyword in occasion_rules[occasion][category])]
-                        valid_clothes[category] = occasion_filtered if occasion_filtered else valid_clothes[category]
+                        occasion_keywords = occasion_rules[occasion][category]
+                        occasion_filtered = [item for item in weather_filtered 
+                                            if any(keyword in item['name'] for keyword in occasion_keywords)]
+                        
+                        # 如果场合筛选后没有结果，放宽条件使用天气筛选结果
+                        if not occasion_filtered:
+                            occasion_filtered = weather_filtered
+                        valid_clothes[category] = occasion_filtered
+                    else:
+                        valid_clothes[category] = weather_filtered
                 
-                # 确保每个分类至少有一个选项
+                # 确保每个分类至少有一个选项（防止空列表错误）
                 for category in valid_clothes:
                     if not valid_clothes[category]:
-                        # 如果筛选后为空，则使用原始数据库中的所有符合季节的衣物
-                        valid_clothes[category] = [item for item in clothes_db[category] 
-                                                  if not item['season'] or season in item['season']]
+                        # 如果所有筛选都失败，使用原始数据库中第一个符合季节的衣物
+                        fallback_items = [item for item in clothes_db[category] 
+                                         if not item['season'] or season in item['season']]
+                        if fallback_items:
+                            valid_clothes[category] = fallback_items
+                        else:
+                            # 如果季节筛选也失败，使用该分类的所有衣物
+                            valid_clothes[category] = clothes_db[category]
                 
                 # 生成至少一套穿搭建议
                 outfits = []
